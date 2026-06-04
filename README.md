@@ -26,7 +26,7 @@ Embeddings and search results are cached in-process (1 h / 30 min TTL respective
 ## Quick start
 
 ```bash
-git clone https://github.com/chironsb/ragu.git
+git clone https://github.com/pmelander/ragu.git
 cd ragu
 bun install
 cp .env.example .env        # edit as needed
