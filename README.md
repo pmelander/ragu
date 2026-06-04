@@ -1,5 +1,7 @@
 # ragU
 
+![ragU logo](ragu.png)
+
 Local document **retrieval** server for PDF, TXT, and MD files. ragU does **not** generate answers — it returns **`context`** (retrieved passages) and **`sources`** (metadata) for your LLM to use.
 
 **Stack:** Bun · TypeScript 5 · LanceDB (ANN vector search) · MiniSearch (keyword) · Reciprocal Rank Fusion · `@xenova/transformers` (local embeddings, no API key)
@@ -41,16 +43,24 @@ On first run the embedding model (~120 MB) is downloaded and cached by `@xenova/
 
 The MCP server (`mcp/ragu-mcp.js`) exposes five native OpenCode tools. It auto-starts the ragU HTTP server if it isn't already running.
 
-**Install (from repo root):**
+### Install
 
 ```bash
 chmod +x scripts/setup-opencode.sh
 ./scripts/setup-opencode.sh
 ```
 
-This writes `~/.config/opencode/ragu-root.txt` (the absolute repo path) and patches `~/.config/opencode/opencode.json` with the MCP entry. Restart OpenCode afterward.
+The script installs three things into `~/.config/opencode/`:
 
-**Manual config** (if the script can't patch your JSON):
+| What | Where | Purpose |
+|------|-------|---------|
+| MCP server entry | `opencode.json` / `opencode.jsonc` | Registers `rag_query`, `rag_upload`, etc. as native tools |
+| Project plugin | `plugins/ragu-project.js` | Auto-indexes new projects on first startup |
+| `/ragu-index` command | `commands/ragu-index.md` | Re-triggers indexing on demand from the TUI |
+
+Restart OpenCode after running the script.
+
+**Manual MCP config** (if the script can't patch your JSON):
 
 ```json
 {
@@ -67,7 +77,7 @@ This writes `~/.config/opencode/ragu-root.txt` (the absolute repo path) and patc
 
 The server port defaults to `3001`; override with `RAGU_PORT`.
 
-**Tools exposed to the LLM:**
+### MCP tools
 
 | Tool | Description |
 |------|-------------|
@@ -79,7 +89,23 @@ The server port defaults to `3001`; override with `RAGU_PORT`.
 
 Collections are created automatically on first upload. Re-uploading a file with the same name into the same collection replaces rather than appends its chunks.
 
-**Environment variable:** if OpenCode doesn't inherit your shell environment the MCP server reads the repo path from `~/.config/opencode/ragu-root.txt` (written by setup) or `RAGU_PATH`.
+### Project support
+
+On first OpenCode startup in a project, the plugin creates `.opencode/ragu.json` and indexes whichever of these paths exist: `docs/`, `README.md`, `AGENTS.md`, `CHANGELOG.md`, `CONTRIBUTING.md`.
+
+```json
+{
+  "collection": "my-project",
+  "paths": ["docs", "README.md", "AGENTS.md"]
+}
+```
+
+- **`collection`** — ragU collection name (defaults to the folder name).
+- **`paths`** — relative file or directory paths to index. Directories are scanned recursively for `.pdf`, `.txt`, `.md` files. Set to `[]` to disable auto-indexing and populate manually.
+
+On subsequent startups nothing happens. Run `/ragu-index` in the TUI at any time to re-index from the current config.
+
+**Note:** if OpenCode doesn't inherit your shell environment the MCP server reads the repo path from `~/.config/opencode/ragu-root.txt` (written by setup) or the `RAGU_PATH` env var.
 
 ### Embedding model
 

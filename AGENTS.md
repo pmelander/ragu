@@ -18,7 +18,7 @@ bun run dev          # start server with hot reload
 bun run build        # tsc → dist/
 bun run test         # jest
 bun run lint         # eslint
-./scripts/setup-opencode.sh  # register MCP server in ~/.config/opencode/
+./scripts/setup-opencode.sh  # register MCP server, plugin, and /ragu-index command
 ```
 
 ## Project structure
@@ -40,9 +40,11 @@ src/
     cache.ts         # node-cache (TTL in seconds)
     logger.ts        # winston (LOG_LEVEL env var)
 mcp/
-  ragu-mcp.js        # MCP server — exposes ragU as native OpenCode tools
+  ragu-mcp.js              # MCP server — exposes ragU as native OpenCode tools
+  ragu-project-plugin.js   # OpenCode plugin — auto-indexes projects on first startup
+  ragu-index.md            # /ragu-index custom command template
 scripts/
-  setup-opencode.sh  # registers MCP server in ~/.config/opencode/
+  setup-opencode.sh  # registers MCP server, plugin, and command in ~/.config/opencode/
 ```
 
 ## API routes
@@ -69,6 +71,26 @@ Response envelope: `{ success, data?, error?, timestamp }`.
 - `docMetadata` (title, fileSize, fileName) spread before user `metadata`; system fields (source, page, chunkIndex) are always last and authoritative.
 - `/api/upload` requires an absolute `filePath`; relative paths are rejected with 400.
 - Re-uploading a file with the same name into the same collection replaces existing chunks (deduplication by source filename).
+
+## Project support
+
+When OpenCode starts in a project that has ragU set up, the plugin (`mcp/ragu-project-plugin.js`) runs automatically:
+
+1. **First startup** — creates `.opencode/ragu.json` with a sensible default config (collection name = folder name, paths = any of `docs/`, `README.md`, `AGENTS.md`, `CHANGELOG.md`, `CONTRIBUTING.md` that exist). Then indexes those paths into ragU.
+2. **Subsequent startups** — config already exists, nothing happens.
+3. **Manual re-index** — run `/ragu-index` in the TUI at any time to re-trigger indexing from the current config.
+
+`.opencode/ragu.json` schema:
+
+```json
+{
+  "collection": "my-project",
+  "paths": ["docs", "README.md", "AGENTS.md"]
+}
+```
+
+- `collection` — ragU collection name (defaults to the project folder name).
+- `paths` — relative paths to index; each may be a file or directory. Directories are scanned recursively for `.pdf`, `.txt`, `.md` files. An empty array means no auto-indexing; the user populates it manually and runs `/ragu-index`.
 
 ## RAG knowledge base
 
