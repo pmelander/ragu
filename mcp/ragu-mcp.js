@@ -34,6 +34,7 @@ const PORT = parseInt(process.env.RAGU_PORT || '3001', 10);
 const STARTUP_TIMEOUT_MS = 15000;
 const STARTUP_POLL_MS = 400;
 const REQUEST_TIMEOUT_MS = 30000;
+const UPLOAD_TIMEOUT_MS  = 300_000; // 5 min — large directories can take a while
 
 // ─── Logging (stderr only — stdout is reserved for MCP protocol) ─────────────
 
@@ -43,7 +44,7 @@ function log(msg) {
 
 // ─── HTTP helpers ─────────────────────────────────────────────────────────────
 
-function httpRequest(method, urlPath, body) {
+function httpRequest(method, urlPath, body, timeoutMs = REQUEST_TIMEOUT_MS) {
   return new Promise((resolve, reject) => {
     const payload = body ? JSON.stringify(body) : undefined;
     const options = {
@@ -70,9 +71,9 @@ function httpRequest(method, urlPath, body) {
     });
 
     req.on('error', reject);
-    req.setTimeout(REQUEST_TIMEOUT_MS, () => {
+    req.setTimeout(timeoutMs, () => {
       req.destroy();
-      reject(new Error(`Request to ${urlPath} timed out after ${REQUEST_TIMEOUT_MS}ms`));
+      reject(new Error(`Request to ${urlPath} timed out after ${timeoutMs}ms`));
     });
 
     if (payload) req.write(payload);
@@ -286,7 +287,7 @@ async function callTool(name, args) {
       const r = await httpRequest('POST', '/api/upload', {
         filePath: args.file_path,
         collection: args.collection || 'default'
-      });
+      }, UPLOAD_TIMEOUT_MS);
 
       const d = r.body?.data || r.body;
       if (!d || r.status >= 400) {
