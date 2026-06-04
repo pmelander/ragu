@@ -10,7 +10,6 @@
     "mcp": "node mcp/ragu-mcp.js",
     "test": "bunx jest --config jest.config.cjs --passWithNoTests",
     "test:watch": "bunx jest --config jest.config.cjs --watch",
-    "lint": "bunx eslint src/**/*.ts",
     "clean": "rm -rf dist data logs",
     "setup": "bun install && mkdir -p data/{documents,lancedb,lexical,cache} logs",
     "setup:full": "bun examples/setup.js"
@@ -44,9 +43,6 @@
     "@types/range-parser": "^1.2.7",
     "@types/send": "^0.17.4",
     "@types/uuid": "^9.0.7",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
-    "eslint": "^8.56.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.4.9",
     "typescript": "^5.3.0"
