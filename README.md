@@ -65,7 +65,7 @@ This writes `~/.config/opencode/ragu-root.txt` (the absolute repo path) and patc
 }
 ```
 
-The server port defaults to `3001`; override with `RAGGY_PORT`.
+The server port defaults to `3001`; override with `RAGU_PORT`.
 
 **Tools exposed to the LLM:**
 
@@ -79,7 +79,7 @@ The server port defaults to `3001`; override with `RAGGY_PORT`.
 
 Collections are created automatically on first upload. Re-uploading a file with the same name into the same collection replaces rather than appends its chunks.
 
-**Environment variable:** if OpenCode doesn't inherit your shell environment the MCP server reads the repo path from `~/.config/opencode/ragu-root.txt` (written by setup) or `RAGGY_PATH`.
+**Environment variable:** if OpenCode doesn't inherit your shell environment the MCP server reads the repo path from `~/.config/opencode/ragu-root.txt` (written by setup) or `RAGU_PATH`.
 
 ### Embedding model
 
@@ -178,7 +178,7 @@ CACHE_TTL=3600
 
 # Logging
 LOG_LEVEL=info
-LOG_FILE=./logs/raggy.log
+LOG_FILE=./logs/ragu.log
 LOG_MAX_SIZE=10m                  # supports "10m", "512k", or bytes
 LOG_MAX_FILES=5
 
@@ -201,7 +201,7 @@ node examples/query.js "What does the paper say about X?" research
 node examples/query.js --interactive research
 ```
 
-`RAGGY_URL` overrides the server address (default: `http://localhost:3001`).
+`RAGU_URL` overrides the server address (default: `http://localhost:3001`).
 
 ---
 
@@ -227,7 +227,7 @@ data/
     <collection>/    # archived copies of indexed source files
     temp/            # multipart upload staging (cleaned up after indexing)
 logs/
-  raggy.log          # file log (if LOG_FILE is set)
+  ragu.log           # file log (if LOG_FILE is set; default name: ragu.log)
 ```
 
 ---

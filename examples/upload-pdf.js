@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Example: Upload a PDF or TXT file to Raggy (multipart API).
+ * Example: Upload a PDF or TXT file to ragU (multipart API).
  *
  * Usage:
  *   node examples/upload-pdf.js path/to/file.pdf [collection-name]
@@ -13,7 +13,7 @@ const path = require('path');
 const FormData = require('form-data');
 const axios = require('axios');
 
-const RAGGY_URL = process.env.RAGGY_URL || 'http://localhost:3001';
+const RAGU_URL = process.env.RAGU_URL || 'http://localhost:3001';
 
 async function uploadFile(filePath, collection = 'default') {
   if (!fs.existsSync(filePath)) {
@@ -35,7 +35,7 @@ async function uploadFile(filePath, collection = 'default') {
     form.append('file', fs.createReadStream(filePath));
     form.append('collection', collection);
 
-    const response = await axios.post(`${RAGGY_URL}/api/documents/upload`, form, {
+    const response = await axios.post(`${RAGU_URL}/api/documents/upload`, form, {
       headers: form.getHeaders(),
       timeout: 300000
     });

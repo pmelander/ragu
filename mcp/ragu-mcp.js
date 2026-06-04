@@ -29,8 +29,8 @@ const fs = require('fs');
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 // __dirname is always the mcp/ folder; the ragU root is one level up.
-const RAGGY_ROOT = path.resolve(__dirname, '..');
-const PORT = parseInt(process.env.RAGGY_PORT || '3001', 10);
+const RAGU_ROOT = path.resolve(__dirname, '..');
+const PORT = parseInt(process.env.RAGU_PORT || '3001', 10);
 const STARTUP_TIMEOUT_MS = 15000;
 const STARTUP_POLL_MS = 400;
 const REQUEST_TIMEOUT_MS = 30000;
@@ -101,38 +101,38 @@ async function ensureServer() {
   if (await isServerUp()) return;
   if (startAttempted) {
     throw new Error(
-      'Raggy server is not running and a prior start attempt failed. ' +
-      `Run \`bun run dev\` in ${RAGGY_ROOT} manually, then retry.`
+      'ragU server is not running and a prior start attempt failed. ' +
+      `Run \`bun run dev\` in ${RAGU_ROOT} manually, then retry.`
     );
   }
   startAttempted = true;
 
-  const pkgPath = path.join(RAGGY_ROOT, 'package.json');
+  const pkgPath = path.join(RAGU_ROOT, 'package.json');
   if (!fs.existsSync(pkgPath)) {
     throw new Error(
-      `Raggy package.json not found at ${RAGGY_ROOT}. ` +
-      'Set the correct path in your MCP command or RAGGY_PATH env var.'
+      `ragU package.json not found at ${RAGU_ROOT}. ` +
+      'Set the correct path in your MCP command or RAGU_PATH env var.'
     );
   }
 
-  log(`Starting Raggy server in ${RAGGY_ROOT} ...`);
+  log(`Starting ragU server in ${RAGU_ROOT} ...`);
 
   // Prefer bun (native runtime); fall back to npx if bun isn't on PATH.
   const child = spawn('bun', ['run', 'dev'], {
-    cwd: RAGGY_ROOT,
+    cwd: RAGU_ROOT,
     detached: true,
     stdio: 'ignore',
-    env: { ...process.env, RAGGY_PATH: RAGGY_ROOT }
+    env: { ...process.env, RAGU_PATH: RAGU_ROOT }
   });
   child.on('error', () => {
     // bun not found — try npm as fallback (slower first-start, but works)
     const npmChild = spawn('npm', ['run', 'dev'], {
-      cwd: RAGGY_ROOT,
+      cwd: RAGU_ROOT,
       detached: true,
       stdio: 'ignore',
-      env: { ...process.env, RAGGY_PATH: RAGGY_ROOT }
+      env: { ...process.env, RAGU_PATH: RAGU_ROOT }
     });
-    npmChild.on('error', (e) => log(`npm fallback also failed: ${e.message}. Run \`bun run dev\` in ${RAGGY_ROOT} manually.`));
+    npmChild.on('error', (e) => log(`npm fallback also failed: ${e.message}. Run \`bun run dev\` in ${RAGU_ROOT} manually.`));
     npmChild.unref();
   });
   child.unref();
@@ -141,14 +141,14 @@ async function ensureServer() {
   while (Date.now() < deadline) {
     await sleep(STARTUP_POLL_MS);
     if (await isServerUp()) {
-      log('Raggy server is up.');
+      log('ragU server is up.');
       return;
     }
   }
 
   throw new Error(
-    `Raggy server did not respond within ${STARTUP_TIMEOUT_MS / 1000}s. ` +
-    `Check logs in ${path.join(RAGGY_ROOT, 'logs')}.`
+    `ragU server did not respond within ${STARTUP_TIMEOUT_MS / 1000}s. ` +
+    `Check logs in ${path.join(RAGU_ROOT, 'logs')}.`
   );
 }
 
@@ -222,7 +222,7 @@ const TOOLS = [
   {
     name: 'rag_status',
     description:
-      'Check whether the Raggy retrieval server is online and return model, retrieval backend, ' +
+      'Check whether the ragU retrieval server is online and return model, retrieval backend, ' +
       'and cache statistics.',
     inputSchema: {
       type: 'object',
@@ -475,4 +475,4 @@ process.stdin.on('end', () => {
 process.on('SIGTERM', () => process.exit(0));
 process.on('SIGINT', () => process.exit(0));
 
-log(`Raggy MCP server ready (root: ${RAGGY_ROOT}, port: ${PORT})`);
+log(`ragU MCP server ready (root: ${RAGU_ROOT}, port: ${PORT})`);

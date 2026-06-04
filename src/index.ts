@@ -10,7 +10,7 @@ async function main() {
     // Validate configuration
     config.validate();
 
-    logger.info('Starting Raggy - Local RAG System');
+    logger.info('Starting ragU - Local RAG System');
     logger.info(`Version: 1.0.0`);
     logger.info(`Port: ${config.server.port}`);
     logger.info(`Host: ${config.server.host}`);
@@ -31,7 +31,7 @@ async function main() {
     });
 
   } catch (error) {
-    logger.error('Failed to start Raggy', error);
+    logger.error('Failed to start ragU', error);
     process.exit(1);
   }
 }

@@ -34,7 +34,7 @@ export interface QueryRequest {
 }
 
 export interface QueryResponse {
-  /** Concatenated retrieved passages for the caller's LLM (Raggy does not run a generative model). */
+  /** Concatenated retrieved passages for the caller's LLM (ragU does not run a generative model). */
   context: string;
   /** @deprecated Same as `context`; kept for older API clients. */
   answer: string;

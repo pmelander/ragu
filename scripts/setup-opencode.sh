@@ -12,16 +12,16 @@
 #   ./scripts/setup-opencode.sh
 set -euo pipefail
 
-RAGGY_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+RAGU_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
-MCP_SCRIPT="$RAGGY_ROOT/mcp/ragu-mcp.js"
+MCP_SCRIPT="$RAGU_ROOT/mcp/ragu-mcp.js"
 OPENCODE_JSON="$CONFIG_DIR/opencode.json"
 
 mkdir -p "$CONFIG_DIR"
 
 # ── 1. ragu-root.txt ─────────────────────────────────────────────────────────
 # Lets the MCP server find the ragU repo when RAGU_PATH is not exported.
-printf '%s\n' "$RAGGY_ROOT" > "$CONFIG_DIR/ragu-root.txt"
+printf '%s\n' "$RAGU_ROOT" > "$CONFIG_DIR/ragu-root.txt"
 echo "Wrote: $CONFIG_DIR/ragu-root.txt"
 
 # ── 2. Patch opencode.json ───────────────────────────────────────────────────

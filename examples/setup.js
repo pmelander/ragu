@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 
 /**
- * Raggy setup helper: Bun, .env, data dirs, optional TypeScript build.
- * Embeddings run via Xenova in Raggy (.env); no Ollama required for the server.
+ * ragU setup helper: Bun, .env, data dirs, optional TypeScript build.
+ * Embeddings run via Xenova in ragU (.env); no Ollama required for the server.
  */
 
 const { execSync } = require('child_process');
@@ -45,7 +45,7 @@ function runCommand(command, description) {
 }
 
 async function main() {
-  log(colors.cyan, '🚀 Raggy setup');
+  log(colors.cyan, 'ragU setup');
   log(colors.cyan, '='.repeat(50));
 
   log(colors.yellow, '\n📋 Prerequisites...');
@@ -82,7 +82,7 @@ async function main() {
     process.exit(1);
   }
 
-  log(colors.blue, '\nℹ️ Raggy uses local embeddings (Xenova) per .env — not Ollama.');
+  log(colors.blue, '\nragU uses local embeddings (Xenova) per .env — not Ollama.');
   log(colors.blue, '   Use Ollama or another LLM only where you compose answers (e.g. OpenCode chat).');
 
   log(colors.yellow, '\n🧪 Quick server check...');

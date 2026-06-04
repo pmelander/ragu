@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Example: Query Raggy (retrieval only — returns context + sources for your LLM).
+ * Example: Query ragU (retrieval only — returns context + sources for your LLM).
  *
  * Usage:
  *   node examples/query.js "Your question?" [collection-name]
@@ -11,7 +11,7 @@
 const axios = require('axios');
 const readline = require('readline');
 
-const RAGGY_URL = process.env.RAGGY_URL || 'http://localhost:3001';
+const RAGU_URL = process.env.RAGU_URL || 'http://localhost:3001';
 
 async function queryDocuments(question, collection = 'default') {
   console.log(`🤔 Question: "${question}"`);
@@ -20,7 +20,7 @@ async function queryDocuments(question, collection = 'default') {
 
   try {
     const response = await axios.post(
-      `${RAGGY_URL}/api/query`,
+      `${RAGU_URL}/api/query`,
       {
         question,
         collection,
@@ -69,7 +69,7 @@ async function interactiveMode(collection = 'default') {
     output: process.stdout
   });
 
-  console.log('🤖 Raggy retrieval (interactive)');
+  console.log('ragU retrieval (interactive)');
   console.log(`📚 Collection: ${collection}`);
   console.log('Type questions (or "exit" to quit):\n');
 
@@ -99,7 +99,7 @@ if (args.length === 0) {
   console.log('  node examples/query.js "your question here" [collection]');
   console.log('  node examples/query.js --interactive [collection]');
   console.log('');
-  console.log('Raggy returns retrieved context, not a generated answer.');
+  console.log('ragU returns retrieved context, not a generated answer.');
   process.exit(1);
 }
 
