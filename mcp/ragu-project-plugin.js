@@ -105,7 +105,12 @@ async function uploadPath(absPath, collection) {
 
 export const RaguProjectPlugin = async ({ directory }) => {
   return {
-    'server.connected': async () => {
+    // Events (server.connected, session.created, etc.) must go through the
+    // generic `event` handler — specific event names as direct keys are only
+    // valid for hook middleware (tool.execute.before, shell.env, …).
+    event: async ({ event }) => {
+      if (event.type !== 'session.created') return;
+
       // Skip non-directory or missing project roots
       if (!directory || !fs.existsSync(directory)) return;
 
